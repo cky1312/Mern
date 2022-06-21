@@ -1,30 +1,32 @@
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 
 dotenv.config({ path: "./.env" });
+require("./db/connection");
+app.use(express.json());
+app.use(require("./router/auth")); // link router
 
-const db = process.env.DATABASE;
+// const User = require("./model/userSchema");
+const PORT = process.env.PORT;
 
-mongoose
-  .connect(db)
-  .then(() => {
-    console.log("connection successfull");
-  })
-  .catch((err) => {
-    console.log("Error");
-  });
+const middleware = (req, res, next) => {
+  console.log("middleware called");
+  next();
+};
+
+// middleware();
+app.use(middleware);
 
 app.get("/", (req, res) => {
   res.send("Hello World ! from home");
 });
 
-app.get("/about", (req, res) => {
+app.get("/about", middleware, (req, res) => {
   res.send("Hello World ! from about");
 });
 
-app.get("/contact", (req, res) => {
+app.get("/contact", middleware, (req, res) => {
   res.send("Hello World ! from contact");
 });
 
@@ -36,6 +38,6 @@ app.get("/login", (req, res) => {
   res.send("Hello World ! from login");
 });
 console.log("hey");
-app.listen(3000, () => {
-  console.log("Server is runnibg at Port 3000");
+app.listen(PORT, () => {
+  console.log(`Server is runnibg at Port ${PORT}`);
 });
