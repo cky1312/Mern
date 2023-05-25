@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 require("../db/connection");
 
 const User = require("../model/userSchema");
@@ -74,14 +75,26 @@ router.post("/signin", async (req, res) => {
 
     console.log({ userLogin });
 
-    if (!userLogin) {
-      res
-        .status(400)
-        .json({ error: "User Signin Unsuccessful", data: userLogin });
-    } else {
-      res
-        .status(200)
-        .json({ message: "User Signin successful", data: userLogin });
+    if (userLogin) {
+      const isMatch = await bcrypt.compare(password, userLogin.password);
+      console.log({ isMatch });
+      const token = await userLogin.generateAuthToken();
+      console.log({ token });
+
+      res.cookie("jwt", token, {
+        expires: new Date(Date.now() + 25892000000),
+        httpOnly: true,
+      });
+
+      if (!isMatch) {
+        res
+          .status(400)
+          .json({ error: "User Signin Unsuccessful", data: userLogin });
+      } else {
+        res
+          .status(200)
+          .json({ message: "User Signin successful", data: userLogin });
+      }
     }
   } catch (error) {
     console.log(error);

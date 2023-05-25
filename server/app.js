@@ -27,6 +27,10 @@ app.get("/about", middleware, (req, res) => {
 });
 
 app.get("/contact", middleware, (req, res) => {
+  // res.cookie("jwt", "token", {
+  //   expires: new Date(Date.now() + 25892000000),
+  //   httpOnly: true,
+  // });
   res.send("Hello World ! from contact");
 });
 
@@ -37,7 +41,7 @@ app.get("/signup", (req, res) => {
 app.get("/login", (req, res) => {
   res.send("Hello World ! from login");
 });
-console.log("hey");
+
 app.listen(PORT, () => {
   console.log(`Server is runnibg at Port ${PORT}`);
 });
