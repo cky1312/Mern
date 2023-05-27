@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("../db/connection");
-
+const cors = require("cors");
 const User = require("../model/userSchema");
 
 router.get("/", async (req, res) => {
